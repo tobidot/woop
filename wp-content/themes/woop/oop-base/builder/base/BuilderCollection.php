@@ -2,12 +2,13 @@
 
 namespace woop;
 
-class BuilderCollection implements Builder
+class BuilderCollection extends Builder
 {
     protected array $elements = [];
 
-    public function add_element(Builder $element): self
+    public function add_element(?IBuilder $element): self
     {
+        if ($element === null) return $this;
         $this->elements[] = $element;
         return $this;
     }
@@ -16,7 +17,7 @@ class BuilderCollection implements Builder
     {
         return implode(
             '',
-            array_map(function (Builder $element) {
+            array_map(function (IBuilder $element) {
                 return $element->build();
             }, $this->elements)
         );

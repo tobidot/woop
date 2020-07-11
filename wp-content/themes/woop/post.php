@@ -1,14 +1,9 @@
 <?php
 
 use woop\BuilderCallback;
-use woop\HtmlStringBuilder;
-
-global $post;
-if (have_posts()) {
-    the_post();
-}
 
 $template = new my_theme\GenericTemplateBuilder();
+
 
 echo $template->set_content(
     new BuilderCallback(function () {

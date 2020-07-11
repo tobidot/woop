@@ -2,7 +2,7 @@
 
 namespace woop;
 
-class HtmlStringBuilder implements HtmlBuilder
+class HtmlStringBuilder extends Builder
 {
     protected string $text = '';
 

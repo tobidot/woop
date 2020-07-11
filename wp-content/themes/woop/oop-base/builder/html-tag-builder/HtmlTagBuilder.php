@@ -5,7 +5,7 @@ namespace woop;
 /**
  * 
  */
-class HtmlTagBuilder implements Builder
+class HtmlTagBuilder extends Builder
 {
     private BuilderCollection $children;
     private HtmlAttributeBuilder $attributes;

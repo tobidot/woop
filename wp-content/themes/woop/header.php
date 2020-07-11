@@ -10,5 +10,5 @@
 ?>
 
 <header id="site-header">
-
+    <h1>Woop Example Theme</h1>
 </header><!-- #site-header -->

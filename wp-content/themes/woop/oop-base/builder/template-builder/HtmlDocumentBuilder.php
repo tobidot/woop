@@ -2,39 +2,41 @@
 
 namespace woop;
 
-class HtmlDocumentBuilder implements Builder
+class HtmlDocumentBuilder extends Builder
 {
-    protected function head(string $content = ''): string
+    protected function head(?IBuilder $inner = null): IBuilder
     {
-        ob_start();?>
-        <head>
-            <?php echo $content ?>
-            <?php wp_head(); ?>
-        </head>
-    <?php
-        return ob_get_clean();
+        return new BuilderCallback(function () use ($inner) {
+            ob_start(); ?>
+
+            <head>
+                <?php wp_head(); ?>
+                <?php if ($inner !== null) echo $inner->build(); ?>
+            </head>
+        <?php
+            return ob_get_clean();
+        });
     }
 
-    protected function body(string $content = ''): \woop\HtmlBuilder
+    protected function body(?IBuilder $inner = null): IBuilder
     {
-        return (new class extends BuilderCallback implements HtmlBuilder {
-            public function build(string $content = '') {
-                ob_start();
-                ?>
-                    <body>
-                        <?php wp_body_open(); ?>
-                        <?php echo $content; ?>
-                    </body>
-                <?php
-                return ob_get_clean();
-            }
+        return new BuilderCallback(function () use ($inner) {
+            ob_start();
+        ?>
+
+            <body>
+                <?php wp_body_open(); ?>
+                <?php if ($inner !== null) echo $inner->build(); ?>
+            </body>
+<?php
+            return ob_get_clean();
         });
     }
 
     public function build(): string
     {;
-        $head = $this->head());
-        $body = (new HtmlStringBuilder)->add_text($this->body());
+        $head = $this->head();
+        $body = $this->body();
         return "<!DOCTYPE html>" . (new HtmlTagBuilder())
             ->set_tagname('html')
             ->set_attributes_builder((new HtmlAttributeBuilder)

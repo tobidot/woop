@@ -4,36 +4,44 @@ namespace woop;
 
 class TemplateBuilder extends HtmlDocumentBuilder
 {
-    protected function header(): string
+    protected function header(?string $name = null, ?IBuilder $inner = null): IBuilder
     {
-        ob_start();
-        get_header();
-        return ob_get_clean();
+        return new BuilderCallback(function () use ($name, $inner) {
+            ob_start();
+            get_header($name);
+            if ($inner !== null) $inner->print();
+            return ob_get_clean();
+        });
     }
 
-    protected function footer(): string
+    protected function footer(?string $name = null, ?IBuilder $inner = null): IBuilder
     {
-        ob_start();
-        get_footer();
-        return ob_get_clean();
+        return new BuilderCallback(function () use ($name, $inner) {
+            ob_start();
+            get_footer($name);
+            if ($inner !== null) $inner->print();
+            return ob_get_clean();
+        });
     }
 
-    protected function main(string $content = ''): string
+    protected function main(?IBuilder $inner = null): IBuilder
     {
-        return <<< HTML
+        return new BuilderCallback(function () use ($inner) {
+            $content = $inner->build();
+            return <<< HTML
 <main id="site-content" role="main">$content</main>
 HTML;
+        });
     }
 
-    protected function body(string $content = ''): string
+    protected function body(?IBuilder $inner = null): IBuilder
     {
-        $header = (new HtmlStringBuilder)->add_text($this->header());
-        $main = (new HtmlStringBuilder)->add_text($this->main($content));
-        $footer = (new HtmlStringBuilder)->add_text($this->footer());
+        $header = $this->header();
+        $main = $this->main($inner);
+        $footer = $this->footer();
         return parent::body((new BuilderCollection())
             ->add_element($header)
             ->add_element($main)
-            ->add_element($footer)
-            ->build());
+            ->add_element($footer));
     }
 }
