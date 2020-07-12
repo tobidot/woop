@@ -2,25 +2,19 @@
 
 namespace woop;
 
+require_once 'HtmlDocumentBuilder.php';
+
 class TemplateBuilder extends HtmlDocumentBuilder
 {
-    protected function header(?string $name = null, ?IBuilder $inner = null): IBuilder
+    protected function header(?IBuilder $after_header = null): IBuilder
     {
-        return new BuilderCallback(function () use ($name, $inner) {
-            ob_start();
-            get_header($name);
-            if ($inner !== null) $inner->print();
-            return ob_get_clean();
-        });
-    }
-
-    protected function footer(?string $name = null, ?IBuilder $inner = null): IBuilder
-    {
-        return new BuilderCallback(function () use ($name, $inner) {
-            ob_start();
-            get_footer($name);
-            if ($inner !== null) $inner->print();
-            return ob_get_clean();
+        return new BuilderCallback(function () use ($after_header) {
+            $after_header_content = ($after_header !== null) ? $after_header->build() : '';
+            return <<< HTML
+            <header id="site-header">
+                $after_header_content
+            </header><!-- #site-header -->
+HTML;
         });
     }
 
@@ -29,7 +23,9 @@ class TemplateBuilder extends HtmlDocumentBuilder
         return new BuilderCallback(function () use ($inner) {
             $content = $inner->build();
             return <<< HTML
-<main id="site-content" role="main">$content</main>
+            <main id="site-content" role="main">
+                $content
+            </main>
 HTML;
         });
     }
@@ -43,5 +39,17 @@ HTML;
             ->add_element($header)
             ->add_element($main)
             ->add_element($footer));
+    }
+
+    protected function footer(?IBuilder $after_footer = null): IBuilder
+    {
+        return new BuilderCallback(function () use ($after_footer) {
+            $after_footer_content = ($after_footer !== null) ? $after_footer->build() : '';
+            return <<< HTML
+            <footer id="site-footer" role="contentinfo">
+                $after_footer_content
+            </footer><!-- #site-footer -->
+HTML;
+        });
     }
 }

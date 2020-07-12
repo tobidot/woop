@@ -10,6 +10,11 @@ class BuilderCallback extends Builder
 {
     protected Closure $callback;
 
+    /**
+     * @param callable $callback
+     *  () => string
+     *  function to return the string upon building
+     */
     public function __construct(callable $callback)
     {
         $this->callback = $callback;

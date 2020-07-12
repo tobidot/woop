@@ -10,4 +10,12 @@ function require_once_all_sub_directories(string $dirname)
     }
 }
 
+function require_once_directory(string $dirname)
+{
+    $files = glob($dirname . '/*.php');
+    foreach ($files as $file) {
+        require_once($file);
+    }
+}
+
 require_once_all_sub_directories(__DIR__);
