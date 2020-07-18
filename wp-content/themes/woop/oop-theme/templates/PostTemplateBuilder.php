@@ -5,24 +5,25 @@ namespace my_theme;
 
 use woop\BuilderCallback;
 use woop\BuilderCollection;
+use woop\HtmlStringBuilder;
 use woop\IBuilder;
 use woop\ThemeTemplateBuilder;
 
 class PostTemplateBuilder extends ThemeTemplateBuilder
 {
-    public BannerPartialTemplate $banner;
+    use BannerPartialTemplate {
+        header as protected banner_header;
+    }
 
     public function __construct()
     {
         parent::__construct();
         $this->page_title->set(\get_the_title());
-        $this->banner = new BannerPartialTemplate;
-        $this->banner->banner_text->set(\get_the_title());
     }
 
     public function header(?IBuilder $inner = null): IBuilder
     {
-        return parent::header($this->banner);
+        return $this->banner_header(new HtmlStringBuilder('Banner Content'));
     }
 
     public function main(?IBuilder $inner = null): IBuilder

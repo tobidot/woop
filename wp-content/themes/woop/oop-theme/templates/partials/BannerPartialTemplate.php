@@ -2,27 +2,33 @@
 
 namespace my_theme;
 
+use woop\Builder;
+use woop\BuilderCallback;
+use woop\IBuilder;
 use woop\ValueBuilderWithFilter;
 
-class BannerPartialTemplate extends \woop\Builder
+trait BannerPartialTemplate
 {
-    public ValueBuilderWithFilter $banner_text;
+    // public ValueBuilderWithFilter $banner_text;
 
-    public function __construct()
-    {
-        $this->banner_text = new ValueBuilderWithFilter('string');
-        $this->banner_text->set('Demo Text');
-    }
+    // public function __construct()
+    // {
+    //     $this->banner_text = new ValueBuilderWithFilter('string');
+    //     $this->banner_text->set('Demo Text');
+    // }
 
-    public function build(): string
+    public function header(?IBuilder $builder = null): IBuilder
     {
-        $text = $this->banner_text->build('');
-        return <<< HTML
+        // $text = $this->banner_text->build('');
+        return parent::header(new BuilderCallback(function () use ($builder) {
+            $text = $builder ? $builder->build() : '';
+            return <<< HTML
         <div class="header-banner">
             <span class="header-banner__text">
-                $text
+                {$text}
             </span>
         </div>
 HTML;
+        }));
     }
 }
