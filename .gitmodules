@@ -1,0 +1,3 @@
+[submodule "wp-content/themes/woop"]
+	path = wp-content/themes/woop
+	url = https://github.com/tobidot/wordpress-oop-theme.git
