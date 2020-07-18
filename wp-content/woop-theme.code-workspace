@@ -1,10 +1,13 @@
 {
 	"folders": [
 		{
+			"path": ".."
+		},
+		{
 			"path": "themes/woop"
 		},
 		{
-			"path": ".."
+			"path": "themes/woop-child"
 		}
 	],
 	"settings": {}
